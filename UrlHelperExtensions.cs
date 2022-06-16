@@ -20,7 +20,7 @@ namespace MVC5AutoVersioningSample.Utils
         ///     동일서버 javascript , css 또는 정적 파일에만 적용할것
         ///     리모트서버의 파일에는 사용금지
         /// </remarks>
-        public static string AppendVersionToFile(this UrlHelper helper, string contentPath)
+        public static string AppendVersion(this UrlHelper helper, string contentPath)
         {
 
             bool isParam = false;
