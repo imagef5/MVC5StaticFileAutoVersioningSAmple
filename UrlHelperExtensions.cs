@@ -22,22 +22,25 @@ namespace MVC5AutoVersioningSample.Utils
         /// </remarks>
         public static string AppendVersion(this UrlHelper helper, string contentPath)
         {
-
             bool isParam = false;
             string paramString = string.Empty;
-            if (contentPath.Contains("?"))
+
+            if(contentPath.Contains("?"))
             {
                 isParam = true;
                 var path = contentPath.Split('?');
                 contentPath = path[0];
                 paramString = "?" + path[1];
             }
-
             contentPath = helper.Content(contentPath);
+            
             var version = GetFileVersion(contentPath, contentPath, helper.RequestContext.HttpContext);
-            version = isParam ? paramString + "&v=" + version : "?v=" + version;
+            if (!string.IsNullOrWhiteSpace(version))
+            {
+                version = isParam ? "&v=" + version : "?v=" + version;
+            }
 
-            return contentPath + version;
+            return contentPath + paramString + version;
         }
 
         /// <summary>
