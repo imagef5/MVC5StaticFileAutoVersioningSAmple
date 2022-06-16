@@ -1,7 +1,7 @@
 # MVC5 js , css 파일 Auto Versioning
 .NET MVC 5 js , css 파일 수정사항 발생시 자동으로 버전 변경 하기
 
--예)  <script src="@Url.AppendVersionToFile("~/Scripts/jquery.validate.min.js")"></script>
+-예)  <script src="@Url.AppendVersion("~/Scripts/jquery.validate.min.js")"></script>
 
 ```
         /// <summary>
@@ -13,7 +13,7 @@
         ///     동일서버 javascript , css 또는 정적 파일에만 적용할것
         ///     리모트서버의 파일에는 사용금지
         /// </remarks>
-        public static string AppendVersionToFile(this UrlHelper helper, string contentPath)
+        public static string AppendVersion(this UrlHelper helper, string contentPath)
         {
 
             bool isParam = false;
