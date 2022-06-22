@@ -4,8 +4,8 @@ namespace MVC5AutoVersioningSample.Utils
 {
     public static class CacheUtil
     {
-        #region SampleCode for Cash Signaled Item
-        public static void SetSignaledCash(string key, string value)
+       #region SampleCode for Cash Signaled Item
+        public static void SetSignaledCash(string key, object value)
         {
             var cache = MemoryCache.Default;
             var versionItem = cache.GetCacheItem(key);
@@ -22,9 +22,28 @@ namespace MVC5AutoVersioningSample.Utils
             }
         }
 
+        public static object GetSignaledCash(string key)
+        {
+            var cache = MemoryCache.Default;
+            var versionItem = cache.GetCacheItem(key);
+            object value = null;
+
+            if (versionItem != null)
+            {
+                value = versionItem.Value;
+            }
+
+            return value;
+        }
+
         public static void FlushSignaledCash(string key)
         {
             SignaledChangeMonitor.Signal(key);
+        }
+
+        public static void AllFlushSignaledCash()
+        {
+            SignaledChangeMonitor.Signal();
         }
         #endregion
     }
