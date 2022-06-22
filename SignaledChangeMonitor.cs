@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.Caching;
 
-namespace AutoVersioningSample
+namespace MVC5AutoVersioningSample
 {
     public class SignaledChangeEventArgs : EventArgs
     {
