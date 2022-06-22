@@ -1,3 +1,6 @@
+/*
+    참조 : https://stackoverflow.com/questions/4183270/how-to-clear-memorycache
+*/
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -41,11 +44,8 @@ namespace MVC5AutoVersioningSample
 
         public static void Signal(string name = null)
         {
-            if (Signaled != null)
-            {
-                // Raise shared event to notify all subscribers
-                Signaled(null, new SignaledChangeEventArgs(name));
-            }
+            // Raise shared event to notify all subscribers
+            Signaled?.Invoke(null, new SignaledChangeEventArgs(name));
         }
 
         protected override void Dispose(bool disposing)
