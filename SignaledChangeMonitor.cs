@@ -1,12 +1,14 @@
 /*
-    참조 : https://stackoverflow.com/questions/4183270/how-to-clear-memorycache
-*/
+ *  참조 : https://stackoverflow.com/questions/4183270/how-to-clear-memorycache 
+ *        https://stackoverflow.com/questions/9003656/memorycache-with-regions-support/55414488#55414488
+ */
 using System;
-using System.Diagnostics;
+using System.Collections.Concurrent;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.Caching;
 
-namespace MVC5AutoVersioningSample
+namespace LCTM.Utils
 {
     public class SignaledChangeEventArgs : EventArgs
     {
@@ -24,9 +26,11 @@ namespace MVC5AutoVersioningSample
     public class SignaledChangeMonitor : ChangeMonitor
     {
         // Shared across all SignaledChangeMonitors in the AppDomain
-        private static event EventHandler<SignaledChangeEventArgs> Signaled;
+        private static ConcurrentDictionary<string, EventHandler<SignaledChangeEventArgs>> ListenerLookup =
+            new ConcurrentDictionary<string, EventHandler<SignaledChangeEventArgs>>();
 
         private string _name;
+        private string _key;
         private string _uniqueId = Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture);
 
         public override string UniqueId
@@ -34,31 +38,37 @@ namespace MVC5AutoVersioningSample
             get { return _uniqueId; }
         }
 
-        public SignaledChangeMonitor(string name = null)
+        public SignaledChangeMonitor(string key, string name)
         {
+            _key = key;
             _name = name;
             // Register instance with the shared event
-            Signaled += OnSignalRaised;
+            ListenerLookup[_uniqueId] = OnSignalRaised;
             base.InitializationComplete();
         }
+
 
         public static void Signal(string name = null)
         {
             // Raise shared event to notify all subscribers
-            Signaled?.Invoke(null, new SignaledChangeEventArgs(name));
+            foreach (var subscriber in ListenerLookup.ToList())
+            {
+                subscriber.Value?.Invoke(null, new SignaledChangeEventArgs(name));
+            }
         }
 
         protected override void Dispose(bool disposing)
         {
-            Signaled -= OnSignalRaised;
+            // Set delegate to null so it can't be accidentally called in Signal() while being disposed
+            ListenerLookup[_uniqueId] = null;
+            EventHandler<SignaledChangeEventArgs> outValue = null;
+            ListenerLookup.TryRemove(_uniqueId, out outValue);
         }
 
         private void OnSignalRaised(object sender, SignaledChangeEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(e.Name) || string.Compare(e.Name, _name, true) == 0)
             {
-                Debug.WriteLine(
-                    _uniqueId + " notifying cache of change.", "SignaledChangeMonitor");
                 // Cache objects are obligated to remove entry upon change notification.
                 base.OnChanged(null);
             }
