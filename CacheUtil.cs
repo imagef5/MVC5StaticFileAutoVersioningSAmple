@@ -26,24 +26,13 @@ namespace MVC5AutoVersioningSample.Utils
         {
             var cache = MemoryCache.Default;
             var versionItem = cache.GetCacheItem(key);
-            object value = null;
-
-            if (versionItem != null)
-            {
-                value = versionItem.Value;
-            }
-
-            return value;
+            
+            return versionItem?.Value;;
         }
 
-        public static void FlushSignaledCash(string key)
+        public static void FlushSignaledCash(string key = null)
         {
             SignaledChangeMonitor.Signal(key);
-        }
-
-        public static void AllFlushSignaledCash()
-        {
-            SignaledChangeMonitor.Signal();
         }
         #endregion
     }
