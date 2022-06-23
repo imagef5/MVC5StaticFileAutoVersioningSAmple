@@ -22,13 +22,8 @@ namespace MVC5AutoVersioningSample.Controllers
         public ActionResult FlushCache(string key)
         {
             CacheUtil.FlushSignaledCash(key);
+            key = key ?? "모든"
             return Content($"{key} 값이 삭제 되었습니다.");
-        }
-
-        public ActionResult AllFlushCache()
-        {
-            CacheUtil.AllFlushSignaledCash();
-            return Content("모든 캐시가 삭제 되었습니다.");
         }
     }
 }
