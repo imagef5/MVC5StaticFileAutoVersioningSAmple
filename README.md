@@ -1,4 +1,8 @@
 # MVC5 js , css 파일 Auto Versioning
+
+* 이 코드는 .Net Framework 4.5.* 버전으로 개발된 코드 입니다.
+* .Net core 이후 버전에서는 asp-append-version="true" 설정을 사용하세요
+
 .NET MVC 5 js , css 파일 수정사항 발생시 자동으로 버전 변경 하기
 
 -예)  <script src="@Url.AppendVersion("~/Scripts/jquery.validate.min.js")"></script>
