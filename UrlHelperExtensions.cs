@@ -24,20 +24,29 @@ namespace MVC5AutoVersioningSample.Utils
         {
             bool isParam = false;
             string paramString = string.Empty;
+            string version = string.Empty;
 
-            if(contentPath.Contains("?"))
+            if (contentPath.Contains("?"))
             {
                 isParam = true;
                 var path = contentPath.Split('?');
                 contentPath = path[0];
                 paramString = "?" + path[1];
             }
-            contentPath = helper.Content(contentPath);
-            
-            var version = GetFileVersion(contentPath, contentPath, helper.RequestContext.HttpContext);
-            if (!string.IsNullOrWhiteSpace(version))
+
+            try
             {
-                version = isParam ? "&v=" + version : "?v=" + version;
+                contentPath = helper.Content(contentPath);
+
+                version = GetFileVersion(contentPath, contentPath, helper.RequestContext.HttpContext);
+                if (!string.IsNullOrWhiteSpace(version))
+                {
+                    version = isParam ? "&v=" + version : "?v=" + version;
+                }
+            }
+            catch 
+            {
+                //Error 발생시 입력된 contentPath 그대로 리턴
             }
 
             return contentPath + paramString + version;
